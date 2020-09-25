@@ -92,6 +92,7 @@ func (runner *Runner) Run() error {
 
 	err = runner.createCache(tarPath)
 	if err != nil {
+		log.Printf("Error Caching using tarPath: %s, err: %s\n", tarPath, err)
 		return errors.Wrap(err, "failed to cache runnable app artifact")
 	}
 
@@ -144,6 +145,7 @@ func (runner *Runner) createCache(tarPath string) error {
 	if err != nil {
 		return errors.Wrap(err, "Failed to create output build artifacts cache dir")
 	}
+	log.Printf("OutputBuildArtifactsCache: %s and BuildArtifactCacheDir: %s\n", runner.config.OutputBuildArtifactsCache, runner.config.BuildArtifactsCacheDir())
 
 	err = exec.Command(tarPath, "-czf", runner.config.OutputBuildArtifactsCache, "-C", runner.config.BuildArtifactsCacheDir(), ".").Run()
 	return errors.Wrap(err, "Failed to compress build artifacts")
