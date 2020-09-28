@@ -147,6 +147,22 @@ func (runner *Runner) createCache(tarPath string) error {
 	}
 	log.Printf("OutputBuildArtifactsCache: %s and BuildArtifactCacheDir: %s\n", runner.config.OutputBuildArtifactsCache, runner.config.BuildArtifactsCacheDir())
 
+	_, err = os.Stat(runner.config.BuildArtifactsCacheDir())
+	if os.IsNotExist(err) {
+		log.Printf("%s folder is not present, therefore the cache compression fails\n", runner.config.BuildArtifactsCacheDir())
+	} else {
+		var files []string
+		err = filepath.Walk(runner.config.BuildArtifactsCacheDir(), func(path string, info os.FileInfo, err error) error {
+			files = append(files, path)
+			return nil
+		})
+		if err != nil {
+			log.Printf("Error while walking the location %s error: %s\n", runner.config.BuildArtifactsCacheDir(), err)
+		} else {
+			log.Printf("File in location %s:  %v\n", runner.config.BuildArtifactsCacheDir(), files)
+		}
+	}
+
 	err = exec.Command(tarPath, "-czf", runner.config.OutputBuildArtifactsCache, "-C", runner.config.BuildArtifactsCacheDir(), ".").Run()
 	log.Printf("Error compressing the Build Artifact Args :%s \n", err)
 	return errors.Wrap(err, "Failed to compress build artifacts")
