@@ -22,7 +22,7 @@ USER vcap
 COPY --from=builder /executor /packs/
 
 ENTRYPOINT [ \
-  "/packs/executor" \
+  "strace /packs/executor" \
 ]
 
 ARG GIT_SHA
