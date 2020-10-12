@@ -21,11 +21,10 @@ USER vcap
 
 COPY --from=builder /executor /packs/
 
-
-CMD "/packs/executor"
+#CMD "/packs/executor"
 
 ENTRYPOINT [ \
-  "strace" \
+  "strace", "/packs/executor" \
 ]
 
 ARG GIT_SHA
