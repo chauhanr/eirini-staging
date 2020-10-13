@@ -24,7 +24,7 @@ COPY --from=builder /executor /packs/
 #CMD "/packs/executor"
 
 ENTRYPOINT [ \
-  "strace", "/packs/executor" \
+  "/packs/executor" \
 ]
 
 ARG GIT_SHA
