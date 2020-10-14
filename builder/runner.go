@@ -163,8 +163,17 @@ func (runner *Runner) createCache(tarPath string) error {
 		}
 	}
 
-	err = exec.Command("/usr/bin/strace", tarPath, "-czf", runner.config.OutputBuildArtifactsCache, "-C", runner.config.BuildArtifactsCacheDir(), ".").Run()
-	log.Printf("Error compressing the Build Artifact Args :%s \n", err)
+	cmd := exec.Command("/usr/bin/strace", tarPath, "-czf", runner.config.OutputBuildArtifactsCache, "-C", runner.config.BuildArtifactsCacheDir(), ".")
+	var outb, errb bytes.Buffer
+	cmd.Stdout = &outb
+	cmd.Stderr = &errb
+	err = cmd.Run()
+	if err != nil {
+		log.Printf("Error compressing the Build Artifact Args :%s \n", err)
+	}
+	log.Printf("tar-command output: %s\n", outb.String())
+	log.Printf("tar-command error : %s\n", errb.String())
+
 	return errors.Wrap(err, "Failed to compress build artifacts")
 }
 
